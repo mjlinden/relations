@@ -17,4 +17,12 @@
         <li>Your template at <code><a href="{{ 'C:/Users/LINM04/PhpstormProjects/relations/templates/bezoeker/index.html.twig'|file_link(0) }}">templates/bezoeker/index.html.twig</a></code></li>
     </ul>
 </div>
+
+{% for product in products %}
+    <h4>{{ product.name }}
+        {{ product.image }}</h4>
+{% endfor %}
+<h2>aantal producten is {{products|length }}</h2>
+
+
 {% endblock %}

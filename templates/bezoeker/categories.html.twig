@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello BezoekerController!{% endblock %}
+
+
+{% block body %}
+    <div class="container">
+
+         {% for message in app.flashes('notice') %}
+            <div class="alert alert-primary">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+    <table class="table">
+        <tr>
+            <th>name</th>
+            <th>description</th>
+        </tr>
+    {% for c in categories %}
+        <h4><tr><td>{{ c.name }}</td>
+                <td>{{ c.description }}</td>
+            </tr></h4>
+    {% endfor %}
+    </table>
+    <h2>aantal categorieen is {{categories|length }}</h2>
+
+    </div>
+{% endblock %}
