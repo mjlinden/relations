@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Category;
 use App\Entity\Product;
 use App\Form\CategoryType;
+use App\Form\ProductType;
 use App\Repository\CategoryRepository;
 use App\Repository\ProductRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -20,7 +21,7 @@ class BezoekerController extends AbstractController
     #[Route('/products', name: 'app_products')]
     public function index2(ProductRepository $p): Response
     {
-        $products=$p->findAll();
+        $products = $p->findAll();
 
         return $this->render('bezoeker/index.html.twig', [
             'controller_name' => 'BezoekerController',
@@ -31,7 +32,7 @@ class BezoekerController extends AbstractController
     #[Route('/categories', name: 'app_categories')]
     public function index3(CategoryRepository $p): Response
     {
-        $categories=$p->findAll();
+        $categories = $p->findAll();
 
         return $this->render('bezoeker/categories.html.twig', [
             'controller_name' => 'BezoekerController',
@@ -40,14 +41,14 @@ class BezoekerController extends AbstractController
     }
 
     #[Route('/insertcat', name: 'app_insert')]
-    public function index4(Request $request,ManagerRegistry $doctrine): Response
+    public function index4(Request $request, ManagerRegistry $doctrine): Response
     {
         $entityManager = $doctrine->getManager();
-        $category=new Category();
+        $category = new Category();
         $form = $this->createForm(CategoryType::class, $category);
         $form->handleRequest($request);
 
-        if($form->isSubmitted()) {
+        if ($form->isSubmitted()) {
             $category = $form->getData();
             // tell Doctrine you want to (eventually) save the Product (no queries yet)
             $entityManager->persist($category);
@@ -57,7 +58,7 @@ class BezoekerController extends AbstractController
 
 
 // add flash messages
-            $name=$category->getName();
+            $name = $category->getName();
 
 
             $this->addFlash(
@@ -71,8 +72,35 @@ class BezoekerController extends AbstractController
         return $this->renderForm('bezoeker/new.html.twig', [
             'form' => $form,
         ]);
-
     }
 
+    #[Route('/insertprod', name: 'app_insert_prod')]
+    public function insertProductAction(Request $request, ManagerRegistry $doctrine)
+    {
+        $entityManager = $doctrine->getManager();
+        $product = new Product();
+        $form = $this->createForm(ProductType::class, $product);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            $product = $form->getData();
+            // tell Doctrine you want to (eventually) save the Product (no queries yet)
+            $entityManager->persist($product);
+            // actually executes the queries (i.e. the INSERT query)
+            $entityManager->flush();
+            // add flash messages
+            $name = $product->getName();
+            $this->addFlash(
+                'notice',
+                "Rij  $name toegevoegd aan product tabel"
+            );
+
+
+            return $this->redirectToRoute('app_products');
+        }
+        return $this->renderForm('bezoeker/new.html.twig', [
+            'form' => $form,
+        ]);
+    }
 
 }
